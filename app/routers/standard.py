@@ -10,6 +10,7 @@ from app.model.Message import Message
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+
 @router.get("/hello")
 def hello(name: str):
     """
@@ -32,10 +33,14 @@ def hello(name: str):
         {"message": "Hello John!"}
     """
     logger.info("called 'hello' endpoint")
-    return {"message": f"Hello Mighty Saver Bunny!"}
+    return {"message": f"Hello {name}!"}
 
 
-@router.get("/message",summary="Random Halloween Message",response_model=Message,)
+@router.get(
+    "/message",
+    summary="Random Halloween Message",
+    response_model=Message,
+)
 def get_message():
     """
     This function is an endpoint for the GET request at the "/message" route. It will returns one random halloween message.
@@ -57,10 +62,11 @@ def get_message():
     return random.choice(messages)
 
 
-@router.get("/location", summary="Get the details of spooky site nearest to you")
+@router.get("/location",
+            summary="Get the details of spooky site nearest to you")
 def nearest_spooky_site(station: str):
     """
-    This function is an endpoint for the GET request at the "/location" route. It will return the location 
+    This function is an endpoint for the GET request at the "/location" route. It will return the location
     and details of the nearest spooky site based on the provided MRT station name.
     Parameters:
 
@@ -75,14 +81,17 @@ def nearest_spooky_site(station: str):
         GET /location?station=pioneer
     """
     if not station:
-        raise HTTPException(status_code=400,detail="Please enter valid string")
+        raise HTTPException(status_code=400,
+                            detail="Please enter valid string")
     if not station.istitle():
-        raise HTTPException(status_code=400,detail="Station name must be in title case (e.g., 'Clarke Quay')")
+        raise HTTPException(
+            status_code=400,
+            detail="Station name must be in title case (e.g., 'Clarke Quay')")
     try:
         spooky_site_details = api.nearest_spooky_site(station)
         return spooky_site_details
     except ValueError as e:
-        raise HTTPException(status_code=400,detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.get("/flag")
